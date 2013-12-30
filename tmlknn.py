@@ -3,24 +3,27 @@ Created on Jan 20, 2013
 
 @author: mlukasik
 
-TML-kNN Classification is a modification of MLkNN algorithm. 
-Both ThreshMLkNNLearner and ThreshMLkNNClassifier correspond to
-MLkNNLearner and MLkNNClassifier and implement the same interface
-except for the constructor of ThreshMLkNNLearner requireing additional
-parameter (a function calculating measure based on FN, TN, TP, FP).
+Multi Label classification algorithm: Threshold Multi-Label k Nearest Neighbours.
 
-For more information, see:
-Michal Lukasik, Tomasz Kusmierczyk, Lukasz Bolikowski, Hung Son Nguyen. 
-"Hierarchical, Multi-label Classification of Scholarly Publications: 
-Modifications of ML-KNN Algorithm"
-Intelligent Tools for Building a Scientific Information Platform 2013: 343-363
+TML-kNN Classification is a modification of MLkNN algorithm.
 
-Implementation  based on Python2.7 and Orange2.6a2.
+The implementation is based on Orange framework for machine learning in Python. 
+
+Both ThreshMLkNNLearner and ThreshMLkNNClassifier correspond to MLkNNLearner and MLkNNClassifier
+and implement the same interface except for the constructor of ThreshMLkNNLearner requiring 
+additional parameter (a function calculating measure based on FN, TN, TP, FP).
+
+The algorithm is implemented as described in: Michal Lukasik, Tomasz Kusmierczyk, Lukasz Bolikowski, 
+Hung Son Nguyen. "Hierarchical, Multi-label Classification of Scholarly Publications: Modifications 
+of ML-KNN Algorithm" Intelligent Tools for Building a Scientific Information Platform 2013: 343-363
+
+Implementation based on Python2.7 and Orange2.6a2.
 '''
 import Orange.multilabel
 import Orange.multilabel.multiknn as _multiknn
+import measures
 
-class ThreshMLkNNLearner(Orange.multilabel.MLkNNLearner):
+class TMLkNNLearner(Orange.multilabel.MLkNNLearner):
     """
     Class implementing the TMLkNN (Threshold Multi-Label k Nearest Neighbours)
     algorithm. 
@@ -105,7 +108,7 @@ class ThreshMLkNNLearner(Orange.multilabel.MLkNNLearner):
             thresholds[lvar] = -1
             bestv = -1
             for thresh in xrange(k+1):
-                FN, TN, TP, FP = ThreshMLkNNLearner._get_basic_measures(c0[lvar], c1[lvar], thresh)
+                FN, TN, TP, FP = TMLkNNLearner._get_basic_measures(c0[lvar], c1[lvar], thresh)
                 efficiency = measure(FN, TN, TP, FP)
                 if efficiency > bestv:
                     bestv = efficiency
@@ -127,9 +130,9 @@ class ThreshMLkNNLearner(Orange.multilabel.MLkNNLearner):
         p0, p1, c0, c1 = self.compute_cond(instances)
         cond_prob = [p0, p1]
         
-        thresholds = ThreshMLkNNLearner._compute_thresholds(self.measure, self.k, instances, c0, c1)
+        thresholds = TMLkNNLearner._compute_thresholds(self.measure, self.k, instances, c0, c1)
         
-        return ThreshMLkNNClassifier(instances = instances,
+        return TMLkNNClassifier(instances = instances,
                                prior_prob = prior_prob, 
                                cond_prob = cond_prob,
                                thresholds = thresholds,
@@ -173,7 +176,7 @@ class ThreshMLkNNLearner(Orange.multilabel.MLkNNLearner):
         
         return p0, p1, c0, c1
  
-class ThreshMLkNNClassifier(_multiknn.MultikNNClassifier):      
+class TMLkNNClassifier(_multiknn.MultikNNClassifier):      
     def __call__(self, instance, result_type=Orange.classification.Classifier.GetValue):
         """
         :rtype: a list of :class:`Orange.data.Value`, a list of 
@@ -213,7 +216,7 @@ class ThreshMLkNNClassifier(_multiknn.MultikNNClassifier):
 if __name__ == "__main__":
     data = Orange.data.Table("emotions.tab")
 
-    classifier = ThreshMLkNNLearner(tmlknn_threshold_measures.acc, data,5,1.0)
+    classifier = TMLkNNLearner(measures.acc, data,5,1.0)
     for i in range(10):
         c,p = classifier(data[i],Orange.classification.Classifier.GetBoth)
         print c,p

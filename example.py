@@ -8,9 +8,9 @@ import tmlknn, measures
 
 learners = [
     Orange.multilabel.MLkNNLearner(name="mlknn",k=5),
-    tmlknn.ThreshMLkNNLearner(measure=measures.acc, name="threshmlknn",k=5),
-    tmlknn.ThreshMLkNNLearner(measure=measures.f1, name="threshmlknn",k=5),
-    tmlknn.ThreshMLkNNLearner(measure=measures.f1_acc, name="threshmlknn",k=5)
+    tmlknn.TMLkNNLearner(measure=measures.acc, name="tmlknn-acc",k=5),
+    tmlknn.TMLkNNLearner(measure=measures.f1, name="tmlknn-f1",k=5),
+    tmlknn.TMLkNNLearner(measure=measures.f1_acc, name="tmlknn-f1-acc",k=5)
 ]
 
 data = Orange.data.Table("emotions")
