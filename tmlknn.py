@@ -8,6 +8,7 @@ Multi Label classification algorithm: Threshold Multi-Label k Nearest Neighbours
 TML-kNN Classification is a modification of MLkNN algorithm.
 
 The implementation is based on Orange framework for machine learning in Python. 
+Major parts are copied from the MLkNNLearner and MultikNNClassifier.
 
 Both ThreshMLkNNLearner and ThreshMLkNNClassifier correspond to MLkNNLearner and MLkNNClassifier
 and implement the same interface except for the constructor of ThreshMLkNNLearner requiring 
